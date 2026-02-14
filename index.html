@@ -1,73 +1,212 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Studio Foto Produk</title>
+<title>Studio Foto AI</title>
+
 <style>
-body{
-    margin:0;
-    font-family:Arial, sans-serif;
-    background:#fff5f7;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  margin: 0;
+  padding: 30px;
 }
-.container{
-    background:white;
-    padding:30px;
-    border-radius:20px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.1);
-    width:400px;
-    text-align:center;
+
+.container {
+  display: flex;
+  gap: 40px;
 }
-h1{ color:#ff69b4; }
-button{
-    background:#ff69b4;
-    border:none;
-    padding:10px 20px;
-    border-radius:10px;
-    color:white;
-    cursor:pointer;
-    margin-top:10px;
+
+.left {
+  width: 400px;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
-select,input{
-    margin-top:10px;
-    padding:8px;
-    width:100%;
-    border-radius:8px;
-    border:1px solid #ddd;
+
+.right {
+  flex: 1;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 500px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
-img{
-    margin-top:20px;
-    max-width:100%;
-    border-radius:15px;
+
+h2 {
+  margin-top: 0;
+}
+
+.upload-box {
+  margin-bottom: 20px;
+}
+
+.upload-box label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+button.preset {
+  padding: 8px;
+  border: 1px solid #ddd;
+  background: #fafafa;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+button.preset.active {
+  border: 2px solid #ff6fa1;
+  background: #ffe6ef;
+}
+
+.aspect-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.generate-btn {
+  width: 100%;
+  padding: 12px;
+  background: #ff6fa1;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#result img {
+  max-width: 100%;
+  border-radius: 10px;
 }
 </style>
 </head>
+
 <body>
+
 <div class="container">
-<h1>Studio Foto Produk</h1>
-<input type="file" id="imageInput" accept="image/*">
-<select>
-<option>Pink Soft</option>
-<option>Cream Minimal</option>
-<option>White Clean</option>
-</select>
-<button onclick="preview()">Generate</button>
-<img id="result">
+
+  <div class="left">
+    <h2>Studio Foto AI</h2>
+
+    <div class="upload-box">
+      <label>Product</label>
+      <input type="file" id="productImage">
+    </div>
+
+    <div class="upload-box">
+      <label>Model (Optional)</label>
+      <input type="file" id="modelImage">
+    </div>
+
+    <h3>Theme</h3>
+    <div class="grid">
+      <button class="preset" onclick="setTheme(this,'Soft Cafe')">Soft Cafe</button>
+      <button class="preset" onclick="setTheme(this,'Floral Minimal')">Floral Minimal</button>
+      <button class="preset" onclick="setTheme(this,'Clean Studio')">Clean Studio</button>
+      <button class="preset" onclick="setTheme(this,'Natural Organic')">Natural Organic</button>
+      <button class="preset" onclick="setTheme(this,'Luxury Dark')">Luxury Dark</button>
+      <button class="preset" onclick="setTheme(this,'Pastel Dessert')">Pastel Dessert</button>
+      <button class="preset" onclick="setTheme(this,'Cyber Tech')">Cyber Tech</button>
+      <button class="preset" onclick="setTheme(this,'Rustic Wood')">Rustic Wood</button>
+    </div>
+
+    <h3>Color Tone</h3>
+    <div class="grid">
+      <button class="preset" onclick="setColor(this,'Soft Pink')">Soft Pink</button>
+      <button class="preset" onclick="setColor(this,'Cream Warm')">Cream Warm</button>
+      <button class="preset" onclick="setColor(this,'White Clean')">White Clean</button>
+      <button class="preset" onclick="setColor(this,'Beige Neutral')">Beige Neutral</button>
+      <button class="preset" onclick="setColor(this,'Deep Charcoal')">Deep Charcoal</button>
+      <button class="preset" onclick="setColor(this,'Forest Green')">Forest Green</button>
+      <button class="preset" onclick="setColor(this,'Golden Hour')">Golden Hour</button>
+    </div>
+
+    <h3>Aspect Ratio</h3>
+    <div class="aspect-grid">
+      <button class="preset" onclick="setAspect(this,'1:1')">1:1</button>
+      <button class="preset" onclick="setAspect(this,'4:5')">4:5</button>
+      <button class="preset" onclick="setAspect(this,'9:16')">9:16</button>
+      <button class="preset" onclick="setAspect(this,'16:9')">16:9</button>
+    </div>
+
+    <button class="generate-btn" onclick="generateImage()">Generate</button>
+
+  </div>
+
+  <div class="right">
+    <div id="result">Hasil gambar akan muncul di sini</div>
+  </div>
+
 </div>
+
 <script>
-function preview(){
-    const file=document.getElementById("imageInput").files[0];
-    if(!file){ alert("Masukkan foto dulu"); return; }
-    const reader=new FileReader();
-    reader.onload=function(e){
-        document.getElementById("result").src=e.target.result;
-    }
-    reader.readAsDataURL(file);
+let selectedTheme = '';
+let selectedColor = '';
+let selectedAspect = '1:1';
+
+function clearActive(groupClass){
+  document.querySelectorAll(groupClass).forEach(btn=>{
+    btn.classList.remove("active")
+  });
+}
+
+function setTheme(btn,value){
+  clearActive(".grid .preset");
+  btn.classList.add("active");
+  selectedTheme = value;
+}
+
+function setColor(btn,value){
+  btn.classList.add("active");
+  selectedColor = value;
+}
+
+function setAspect(btn,value){
+  clearActive(".aspect-grid .preset");
+  btn.classList.add("active");
+  selectedAspect = value;
+}
+
+async function generateImage(){
+  const productFile = document.getElementById("productImage").files[0];
+
+  if(!productFile){
+    alert("Upload product image dulu!");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("product", productFile);
+  formData.append("theme", selectedTheme);
+  formData.append("color", selectedColor);
+  formData.append("aspect", selectedAspect);
+
+  const res = await fetch("/api/generate", {
+    method: "POST",
+    body: formData
+  });
+
+  const data = await res.json();
+
+  document.getElementById("result").innerHTML =
+    `<img src="${data.image}" />`;
 }
 </script>
+
 </body>
 </html>
