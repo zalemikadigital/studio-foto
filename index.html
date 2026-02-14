@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Studio Foto Produk</title>
+<style>
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#fff5f7;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+.container{
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.1);
+    width:400px;
+    text-align:center;
+}
+h1{ color:#ff69b4; }
+button{
+    background:#ff69b4;
+    border:none;
+    padding:10px 20px;
+    border-radius:10px;
+    color:white;
+    cursor:pointer;
+    margin-top:10px;
+}
+select,input{
+    margin-top:10px;
+    padding:8px;
+    width:100%;
+    border-radius:8px;
+    border:1px solid #ddd;
+}
+img{
+    margin-top:20px;
+    max-width:100%;
+    border-radius:15px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Studio Foto Produk</h1>
+<input type="file" id="imageInput" accept="image/*">
+<select>
+<option>Pink Soft</option>
+<option>Cream Minimal</option>
+<option>White Clean</option>
+</select>
+<button onclick="preview()">Generate</button>
+<img id="result">
+</div>
+<script>
+function preview(){
+    const file=document.getElementById("imageInput").files[0];
+    if(!file){ alert("Masukkan foto dulu"); return; }
+    const reader=new FileReader();
+    reader.onload=function(e){
+        document.getElementById("result").src=e.target.result;
+    }
+    reader.readAsDataURL(file);
+}
+</script>
+</body>
+</html>
